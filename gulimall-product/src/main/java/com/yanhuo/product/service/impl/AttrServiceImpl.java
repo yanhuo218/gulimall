@@ -26,4 +26,9 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         return new PageUtils(page);
     }
 
+    @Override
+    public PageUtils relation(Map<String, Object> params, String attrgroupId) {
+        return null;
+    }
+
 }

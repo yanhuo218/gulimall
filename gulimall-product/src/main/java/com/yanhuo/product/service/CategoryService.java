@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.yanhuo.common.utils.PageUtils;
 import com.yanhuo.product.entity.CategoryEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +17,13 @@ import java.util.Map;
 public interface CategoryService extends IService<CategoryEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    List<CategoryEntity> listWithTree();
+
+    void removeMenuByIds(List<Long> list);
+
+    void undisable(List<Long> list);
+
+    Long[] findPath(Long catelogId);
 }
 

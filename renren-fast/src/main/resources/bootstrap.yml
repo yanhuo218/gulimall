@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: renren-fast
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: 0fec8db6-4006-427e-924a-f031dce7478a
+        group: gulimall
+      config:
+        server-addr: 127.0.0.1:8848
+        namespace: 0fec8db6-4006-427e-924a-f031dce7478a
+        group: gulimall

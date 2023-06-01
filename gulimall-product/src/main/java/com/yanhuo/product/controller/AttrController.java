@@ -15,6 +15,7 @@ import com.yanhuo.product.service.AttrService;
 import com.yanhuo.common.utils.PageUtils;
 import com.yanhuo.common.utils.R;
 
+import javax.management.relation.Relation;
 
 
 /**
@@ -85,5 +86,6 @@ public class AttrController {
 
         return R.ok();
     }
+
 
 }

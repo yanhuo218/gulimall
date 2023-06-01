@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: gulimall-third-party
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        namespace: 0fec8db6-4006-427e-924a-f031dce7478a
+        file-extension: yml
+        group: gulimall

@@ -15,11 +15,11 @@ import java.util.Map;
  */
 public class Query<T> {
 
-    public IPage<T> getPage(Map<String, Object> params) {
+    public Page<T> getPage(Map<String, Object> params) {
         return this.getPage(params, null, false);
     }
 
-    public IPage<T> getPage(Map<String, Object> params, String defaultOrderField, boolean isAsc) {
+    public Page<T> getPage(Map<String, Object> params, String defaultOrderField, boolean isAsc) {
         //分页参数
         long curPage = 1;
         long limit = 10;
