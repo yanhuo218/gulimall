@@ -1,5 +1,9 @@
 package com.yanhuo.product.service.impl;
 
+import com.yanhuo.product.controller.CategoryBrandRelationController;
+import com.yanhuo.product.service.CategoryBrandRelationService;
+import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -14,10 +18,14 @@ import com.yanhuo.common.utils.Query;
 import com.yanhuo.product.dao.CategoryDao;
 import com.yanhuo.product.entity.CategoryEntity;
 import com.yanhuo.product.service.CategoryService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
+
+    @Autowired
+    private CategoryBrandRelationService relationService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -30,6 +38,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     public List<CategoryEntity> listWithTree() {
 
         List<CategoryEntity> entities = baseMapper.selectListAll();
+        if (entities == null) return null;
         return entities.stream().filter(categoryEntity -> {
             if (categoryEntity.getParentCid() != null) {
                 return categoryEntity.getParentCid() == 0;
@@ -54,6 +63,13 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         List<Long> parentPath = findParentPath(catelogId, new ArrayList<>());
         Collections.reverse(parentPath);
         return parentPath.toArray(new Long[0]);
+    }
+
+    @Override
+    @Transactional
+    public void updateDetail(CategoryEntity category) {
+        this.updateById(category);
+        relationService.updateCategory(category.getCatId(), category.getName());
     }
 
     public List<Long> findParentPath(Long catelogId, List<Long> path) {

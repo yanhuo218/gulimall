@@ -1,19 +1,22 @@
 package com.yanhuo.product;
 
 import com.yanhuo.product.service.BrandService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+
+@Slf4j
 class GulimallProductApplicationTests {
 
-	@Autowired
-	BrandService brandService;
-	@Test
-	void contextLoads() {
-		int count = brandService.count() ;
-		System.out.println(count);
-	}
+    @Test
+    void contextLoads() {
+
+    }
+
 
 }

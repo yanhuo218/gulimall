@@ -3,7 +3,9 @@ package com.yanhuo.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yanhuo.common.utils.PageUtils;
 import com.yanhuo.product.entity.AttrAttrgroupRelationEntity;
+import com.yanhuo.product.vo.AttrgroupRelationVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +18,7 @@ import java.util.Map;
 public interface AttrAttrgroupRelationService extends IService<AttrAttrgroupRelationEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    void saveBatchRelation(List<AttrgroupRelationVo> attrgroupRelation);
 }
 

@@ -1,7 +1,12 @@
 package com.yanhuo.product.service.impl;
 
+import com.mysql.cj.util.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -26,4 +31,16 @@ public class SpuImagesServiceImpl extends ServiceImpl<SpuImagesDao, SpuImagesEnt
         return new PageUtils(page);
     }
 
+    @Override
+    public void saveSpuImages(Long id, List<String> images) {
+        if (images != null && images.size() > 0) {
+            List<SpuImagesEntity> collect = images.stream().map(item -> {
+                SpuImagesEntity spuImagesEntity = new SpuImagesEntity();
+                spuImagesEntity.setSpuId(id);
+                spuImagesEntity.setImgUrl(item);
+                return spuImagesEntity;
+            }).filter(item -> !StringUtils.isNullOrEmpty(item.getImgUrl())).collect(Collectors.toList());
+            this.saveBatch(collect);
+        }
+    }
 }

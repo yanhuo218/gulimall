@@ -25,5 +25,7 @@ public interface CategoryService extends IService<CategoryEntity> {
     void undisable(List<Long> list);
 
     Long[] findPath(Long catelogId);
+
+    void updateDetail(CategoryEntity category);
 }
 

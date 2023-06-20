@@ -1,7 +1,20 @@
 package com.yanhuo.coupon.service.impl;
 
+import com.yanhuo.common.to.MemberPrice;
+import com.yanhuo.common.to.SkuReductionTo;
+import com.yanhuo.coupon.entity.MemberPriceEntity;
+import com.yanhuo.coupon.entity.SkuLadderEntity;
+import com.yanhuo.coupon.service.MemberPriceService;
+import com.yanhuo.coupon.service.SkuLadderService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -11,10 +24,17 @@ import com.yanhuo.common.utils.Query;
 import com.yanhuo.coupon.dao.SkuFullReductionDao;
 import com.yanhuo.coupon.entity.SkuFullReductionEntity;
 import com.yanhuo.coupon.service.SkuFullReductionService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("skuFullReductionService")
 public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao, SkuFullReductionEntity> implements SkuFullReductionService {
+
+    @Autowired
+    private SkuLadderService skuLadderService;
+
+    @Autowired
+    private MemberPriceService memberPriceService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -24,6 +44,38 @@ public class SkuFullReductionServiceImpl extends ServiceImpl<SkuFullReductionDao
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    @Transactional
+    public void saveSkuReduction(SkuReductionTo skuReductionTo) {
+        // 1.保存满减打折,会员价格等信息
+        SkuLadderEntity skuLadderEntity = new SkuLadderEntity();
+        BeanUtils.copyProperties(skuReductionTo, skuLadderEntity);
+        skuLadderEntity.setAddOther(skuReductionTo.getCountStatus());
+        if (skuReductionTo.getFullCount() > 0) {
+            skuLadderService.save(skuLadderEntity);
+        }
+        // 2.保存满减信息
+        SkuFullReductionEntity skuFullReductionEntity = new SkuFullReductionEntity();
+        BeanUtils.copyProperties(skuReductionTo, skuFullReductionEntity);
+        if (skuFullReductionEntity.getFullPrice().compareTo(new BigDecimal("0")) > 0) {
+            this.save(skuFullReductionEntity);
+        }
+        // 3.保存会员价格
+        List<MemberPrice> memberPrice = skuReductionTo.getMemberPrice();
+        if (memberPrice != null && memberPrice.size() != 0) {
+            List<MemberPriceEntity> collect = memberPrice.stream().map(item -> {
+                MemberPriceEntity memberPriceEntity = new MemberPriceEntity();
+                memberPriceEntity.setSkuId(skuReductionTo.getSkuId());
+                memberPriceEntity.setMemberLevelId(item.getId());
+                memberPriceEntity.setMemberLevelName(item.getName());
+                memberPriceEntity.setMemberPrice(item.getPrice());
+                memberPriceEntity.setAddOther(1);
+                return memberPriceEntity;
+            }).filter(item -> item.getMemberPrice().compareTo(new BigDecimal("0")) > 0).collect(Collectors.toList());
+            memberPriceService.saveBatch(collect);
+        }
     }
 
 }

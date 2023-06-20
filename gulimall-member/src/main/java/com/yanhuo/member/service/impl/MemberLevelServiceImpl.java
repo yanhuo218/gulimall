@@ -1,7 +1,10 @@
 package com.yanhuo.member.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import org.springframework.stereotype.Service;
+
 import java.util.Map;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -18,9 +21,14 @@ public class MemberLevelServiceImpl extends ServiceImpl<MemberLevelDao, MemberLe
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
+        QueryWrapper<MemberLevelEntity> wrapper = new QueryWrapper<>();
+        String key = (String) params.get("key");
+        if (!StringUtils.isEmpty(key)) {
+            wrapper.like("name", key).or().eq("id", key).or().like("note", key);
+        }
         IPage<MemberLevelEntity> page = this.page(
                 new Query<MemberLevelEntity>().getPage(params),
-                new QueryWrapper<MemberLevelEntity>()
+                wrapper
         );
 
         return new PageUtils(page);

@@ -5,6 +5,13 @@ spring:
         enabled: true
     gateway:
       routes:
+        # 用户服务
+        - id: member_route
+          uri: lb://gulimall-member
+          predicates:
+            - Path=/api/member/**
+          filters:
+            - RewritePath=/api/(?<segment>/?.*),/$\{segment}
         # 商品管理
         - id: product_route
           uri: lb://gulimall-product
